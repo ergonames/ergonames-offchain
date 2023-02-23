@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: ergonames-db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ergonames
+      POSTGRES_USER: ergonames
+      POSTGRES_DB: ergonames
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: ergonames-pgadmin
+    image: dpage/pgadmin4:4.23
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - 15432:80
+    depends_on:
+      - db
+
+  sync-engine:
+    container_name: ergonames-sync-engine
+    build:
+      context: ./modules/sync-engine
+      dockerfile: Dockerfile
+    restart: unless-stopped
+  
+  chain-tracker:
+    container_name: ergonames-chain-tracker
+    build:
+      context: ./modules/chain-tracker
+      dockerfile: Dockerfile
+    restart: unless-stopped

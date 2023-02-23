@@ -1,0 +1,17 @@
+.metals/
+.bloop/
+.bsp/
+.vscode/
+.idea/
+
+project/target/
+project/project/
+target/
+out/
+META-INF/
+
+db/
+
+config.json
+
+ergonames-transaction-utils.jar
