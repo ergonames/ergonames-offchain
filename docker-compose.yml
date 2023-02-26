@@ -26,16 +26,16 @@ services:
     depends_on:
       - db
 
-  sync-engine:
-    container_name: ergonames-sync-engine
-    build:
-      context: ./modules/sync-engine
-      dockerfile: Dockerfile
-    restart: unless-stopped
-  
   chain-tracker:
     container_name: ergonames-chain-tracker
     build:
       context: ./modules/chain-tracker
+      dockerfile: Dockerfile
+    restart: unless-stopped
+  
+  offchain-executor:
+    container_name: ergonames-offchain-executor
+    build:
+      context: ./modules/offchain-executor
       dockerfile: Dockerfile
     restart: unless-stopped
