@@ -147,7 +147,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "ergonames-sync-engine"
+name = "ergonames-chain-tracker"
 version = "0.1.0"
 dependencies = [
  "anyhow",
