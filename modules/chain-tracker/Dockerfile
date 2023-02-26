@@ -4,4 +4,4 @@ WORKDIR /src/
 COPY ./ ./
 
 RUN cargo build --release
-CMD ["./target/release/ergonames-sync-engine"]
+CMD ["./target/release/ergonames-chain-tracker"]
