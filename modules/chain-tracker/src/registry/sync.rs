@@ -1,6 +1,6 @@
 use crate::utils::{consts::INITIAL_AVLTREE_CREATION_TRANSACTION_ID, database::{write_to_confirmed_registry_insertions}, types::{convert_initial_transaction_information_to_registration_information, IniitalTransactionInformation, RegistrationInformation}, endpoints::{get_initial_transaction_information, get_mint_information}};
 
-pub fn sync_registry() {
+pub fn initial_registry_sync() {
     let initial_transaction_information: IniitalTransactionInformation = get_initial_transaction_information(INITIAL_AVLTREE_CREATION_TRANSACTION_ID);
     let initial_registration_information: RegistrationInformation = convert_initial_transaction_information_to_registration_information(initial_transaction_information);
     write_to_confirmed_registry_insertions(&initial_registration_information);
@@ -15,4 +15,8 @@ pub fn sync_registry() {
             last_spent_transaction_id = registration_information.spend_transaction_id.clone();
         }
     }
+}
+
+pub fn continuous_registry_sync() {
+    
 }

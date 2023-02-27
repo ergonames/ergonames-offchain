@@ -3,11 +3,15 @@ pub mod registry;
 pub mod utils;
 
 use mempool::tracker::track_mempool;
-use utils::database::create_database_schema;
-use registry::sync::sync_registry;
+use utils::database::{create_database_schema, wait_for_database};
+use registry::sync::initial_registry_sync;
 
 fn main() {
+    wait_for_database();
     create_database_schema();
-    sync_registry();
+    initial_registry_sync();
     track_mempool();
+    loop {
+        
+    }
 }
