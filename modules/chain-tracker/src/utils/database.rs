@@ -1,5 +1,5 @@
 use anyhow::Result;
-use postgres::{Client, NoTls};
+use postgres::{Client, NoTls, Row, Error};
 
 use crate::utils::{consts::DATABASE_PATH, types::{RegistrationInformation, MintRequest}};
 
@@ -83,4 +83,34 @@ fn create_mint_requests_schema() {
 fn connect_to_database() -> Result<Client> {
     let client: Client = Client::connect(DATABASE_PATH, NoTls)?;
     Ok(client)
+}
+
+pub fn get_last_confirmed_registry_insertion() -> RegistrationInformation {
+    let mut client: Client = connect_to_database().unwrap_or_else(|e| {
+        eprintln!("Error connecting to database: {}", e);
+        std::process::exit(1);
+    });
+
+    let query: &str = "SELECT * FROM confirmed_registry_insertions WHERE spend_transaction_id IS NULL";
+    let rows: Vec<Row> = client.query(query, &[]).unwrap();
+    let row: Option<&Row> = rows.get(0);
+    if row.is_none() {
+        panic!("No last confirmed registry insertion found");
+    }
+    let row: &Row = row.unwrap();
+    let ergoname_registered: String = row.get(0);
+    let mint_transaction_id: String = row.get(1);
+    let mut spend_transaction_id: Option<String> = None;
+    let spend_transaction_id_raw: Result<Option<String>, Error> = row.try_get(2);
+    if spend_transaction_id_raw.is_ok() {
+        spend_transaction_id = spend_transaction_id_raw.unwrap();
+    }
+    let ergoname_token_id: String = row.get(3);
+    let registration_information: RegistrationInformation = RegistrationInformation {
+        ergoname_registered,
+        mint_transaction_id,
+        spend_transaction_id,
+        ergoname_token_id,
+    };
+    registration_information
 }
