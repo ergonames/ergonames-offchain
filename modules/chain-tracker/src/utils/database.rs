@@ -25,6 +25,7 @@ pub fn write_to_confirmed_registry_insertions(registration_information: &Registr
 
 pub fn create_database_schema() {
     create_registration_information_schema();
+    create_mint_requests_schema();
 }
 
 fn create_registration_information_schema() {
@@ -38,6 +39,19 @@ fn create_registration_information_schema() {
         mint_transaction_id VARCHAR(64) NOT NULL,
         spend_transaction_id VARCHAR(64),
         ergoname_token_id VARCHAR(64) NOT NULL
+    );";
+
+    client.execute(query, &[]).unwrap();
+}
+
+fn create_mint_requests_schema() {
+    let mut client: Client = connect_to_database().unwrap_or_else(|e| {
+        eprintln!("Error connecting to database: {}", e);
+        std::process::exit(1);
+    });
+    let query: &str = "CREATE TABLE IF NOT EXISTS mint_requests (
+        box_id VARCHAR(64) NOT NULL PRIMARY KEY,
+        transaction_id VARCHAR(64) NOT NULL
     );";
 
     client.execute(query, &[]).unwrap();

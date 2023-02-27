@@ -1,4 +1,4 @@
 pub const DATABASE_PATH: &str = "postgresql://ergonames:ergonames@localhost:5432/ergonames";
 pub const INDEXED_NODE_URL: &str = "http://198.58.96.195:9052";
 pub const INITIAL_AVLTREE_CREATION_TRANSACTION_ID: &str = "e271e7cb9b9c7932546e8a5746c91cb1c0f1114ff173a90e1fe979170f71c579";
-pub const PROXY_CONTRACT_ADDRESS: &str = "";
+pub const PROXY_CONTRACT_ERGOTREE: &str = "1003040001010400d801d601b2a5730000d1eded7301e6c67201040e93c17201c1b2a4730200";

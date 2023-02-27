@@ -1,7 +1,7 @@
-use reqwest::blocking::Response;
+use reqwest::blocking::{Response, Client};
 use serde_json::Value;
 
-use crate::utils::{consts::INDEXED_NODE_URL, types::{IniitalTransactionInformation, RegistrationInformation}};
+use crate::utils::{consts::INDEXED_NODE_URL, types::{IniitalTransactionInformation, MintRequest, RegistrationInformation}};
 
 pub fn get_initial_transaction_information(initial_transaction_id: &str) -> IniitalTransactionInformation {
     let url: String = format!("{}/blockchain/transaction/byId/{}", INDEXED_NODE_URL, initial_transaction_id);
@@ -39,4 +39,31 @@ pub fn get_mint_information(last_spent_transaction_id: &Option<String>) -> Optio
         ergoname_token_id: ergoname_token_id.to_string(),
     };
     Some(registration_information)
+}
+
+pub fn get_mint_requests_at_proxy_address(ergotree: &str) -> Option<Vec<MintRequest>> {
+    let bod: String = ergotree.clone().to_string();
+    let url: String = format!("{}/blockchain/box/unspent/byErgoTree", INDEXED_NODE_URL);
+    let client: Client = reqwest::blocking::Client::new();
+    let response: Response = client.post(&url)
+        .body(bod)
+        .send()
+        .unwrap();
+    let body: String = response.text().unwrap();
+    let body: Value = serde_json::from_str(&body).unwrap();
+    let transactions: Vec<Value> = body.as_array().unwrap().to_vec();
+    let mut mint_requests: Vec<MintRequest> = Vec::new();
+    for transaction in transactions {
+        let transaction_id: &str = transaction["transactionId"].as_str().unwrap();
+        let box_id: &str = transaction["boxId"].as_str().unwrap();
+        let mint_request: MintRequest = MintRequest {
+            transaction_id: transaction_id.to_string(),
+            box_id: box_id.to_string()
+        };
+        mint_requests.push(mint_request);
+    }
+    if mint_requests.len() == 0 {
+        return None;
+    }
+    Some(mint_requests)
 }

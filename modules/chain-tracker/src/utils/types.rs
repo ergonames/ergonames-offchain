@@ -12,6 +12,12 @@ pub struct IniitalTransactionInformation {
     pub spent_transaction_id: Option<String>
 }
 
+#[derive(Clone, Debug)]
+pub struct MintRequest {
+    pub transaction_id: String,
+    pub box_id: String
+}
+
 pub fn convert_initial_transaction_information_to_registration_information(initial_transaction_information: IniitalTransactionInformation) -> RegistrationInformation {
     let ri: RegistrationInformation = RegistrationInformation {
         ergoname_registered: "".to_string(),
