@@ -38,13 +38,11 @@ pub fn write_to_mint_requests(mint_request: &MintRequest) {
 
     let query = "INSERT INTO mint_requests (
         box_id,
-        transaction_id,
-        spent
-    ) VALUES ($1, $2, $3); ";
+        transaction_id
+    ) VALUES ($1, $2) ON CONFLICT DO NOTHING; ";
     client.execute(query, &[
         &mint_request.box_id,
         &mint_request.transaction_id,
-        &false,
     ]).unwrap();
 }
 

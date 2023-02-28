@@ -1,4 +1,3 @@
-use std::{thread, time};
 use anyhow::Result;
 
 pub mod utils;
@@ -17,7 +16,6 @@ fn main() {
             let output = run_jar(box_id_to_spend, LVIE_MODE);
             println!("{:?}", output);
             update_mint_request_to_spend(box_id_to_spend);
-            thread::sleep(time::Duration::from_secs(2));
         }
     }
 }
