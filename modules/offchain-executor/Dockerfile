@@ -9,6 +9,6 @@ RUN apt-get update && \
 
 RUN cargo build --release
 
-RUN wget https://github.com/ergonames/transaction-utils/releases/download/v0.0.1/ergonames-transaction-utils.jar
+RUN wget https://github.com/ergonames/transaction-utils/releases/download/str/ergonames-transaction-utils.jar
 
 CMD ["./target/release/ergonames-offchain-executor"]
