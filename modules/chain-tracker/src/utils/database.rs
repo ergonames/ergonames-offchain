@@ -38,11 +38,13 @@ pub fn write_to_mint_requests(mint_request: &MintRequest) {
 
     let query = "INSERT INTO mint_requests (
         box_id,
-        transaction_id
-    ) VALUES ($1, $2); ";
+        transaction_id,
+        spent
+    ) VALUES ($1, $2, $3); ";
     client.execute(query, &[
         &mint_request.box_id,
         &mint_request.transaction_id,
+        &false,
     ]).unwrap();
 }
 
@@ -74,7 +76,8 @@ fn create_mint_requests_schema() {
     });
     let query: &str = "CREATE TABLE IF NOT EXISTS mint_requests (
         box_id VARCHAR(64) NOT NULL PRIMARY KEY,
-        transaction_id VARCHAR(64) NOT NULL
+        transaction_id VARCHAR(64) NOT NULL,
+        spent BOOLEAN NOT NULL DEFAULT FALSE
     );";
 
     client.execute(query, &[]).unwrap();
