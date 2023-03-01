@@ -150,13 +150,7 @@ dependencies = [
 name = "ergonames-chain-tracker"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "ergonames-utils",
- "hex",
- "postgres",
- "reqwest",
- "serde_json",
- "sigma-util",
 ]
 
 [[package]]

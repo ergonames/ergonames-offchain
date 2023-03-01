@@ -7,10 +7,3 @@ edition = "2021"
 
 [dependencies]
 ergonames-utils = { path = "../ergonames-utils" }
-
-anyhow = "1.0.68"
-hex = "0.4.3"
-postgres = "0.19.3"
-reqwest = { version = "0.11.13", features = ["blocking"] }
-serde_json = "1.0.91"
-sigma-util = "0.10.0"

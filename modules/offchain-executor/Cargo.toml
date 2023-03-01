@@ -9,4 +9,3 @@ edition = "2021"
 ergonames-utils = { path = "../ergonames-utils" }
 
 anyhow = "1.0.69"
-postgres = "0.19.3"
