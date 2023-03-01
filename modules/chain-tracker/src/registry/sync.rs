@@ -1,4 +1,4 @@
-use crate::utils::{consts::INITIAL_AVLTREE_CREATION_TRANSACTION_ID, database::{get_last_confirmed_registry_insertion, write_to_confirmed_registry_insertions}, types::{convert_initial_transaction_information_to_registration_information, IniitalTransactionInformation, RegistrationInformation}, endpoints::{get_initial_transaction_information, get_mint_information}};
+use ergonames_utils::{consts::INITIAL_AVLTREE_CREATION_TRANSACTION_ID, database::{get_last_confirmed_registry_insertion, write_to_confirmed_registry_insertions}, types::{convert_initial_transaction_information_to_registration_information, IniitalTransactionInformation, RegistrationInformation}, endpoints::{get_initial_transaction_information, get_mint_information}};
 
 pub fn initial_registry_sync() {
     let initial_transaction_information: IniitalTransactionInformation = get_initial_transaction_information(INITIAL_AVLTREE_CREATION_TRANSACTION_ID);

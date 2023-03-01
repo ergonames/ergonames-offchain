@@ -1,7 +1,7 @@
 use reqwest::blocking::{Response, Client};
 use serde_json::Value;
 
-use crate::utils::{consts::INDEXED_NODE_URL, types::{IniitalTransactionInformation, MintRequest, RegistrationInformation}};
+use crate::{consts::INDEXED_NODE_URL, types::{IniitalTransactionInformation, MintRequest, RegistrationInformation}};
 
 pub fn get_initial_transaction_information(initial_transaction_id: &str) -> IniitalTransactionInformation {
     let url: String = format!("{}/blockchain/transaction/byId/{}", INDEXED_NODE_URL, initial_transaction_id);

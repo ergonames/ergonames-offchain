@@ -1,7 +1,7 @@
 use anyhow::Result;
 use postgres::{Client, NoTls, Row, Error};
 
-use crate::utils::{consts::DATABASE_PATH, types::{RegistrationInformation, MintRequest}};
+use crate::{consts::DATABASE_PATH, types::{RegistrationInformation, MintRequest}};
 
 pub fn wait_for_database() {
     let client: Result<Client> = connect_to_database();
@@ -114,4 +114,23 @@ pub fn get_last_confirmed_registry_insertion() -> RegistrationInformation {
         ergoname_token_id,
     };
     registration_information
+}
+
+pub fn get_mint_requests() -> Result<Vec<MintRequest>> {
+    let mut client: Client = connect_to_database()?;
+    let rows: Vec<Row> = client.query("SELECT * FROM mint_requests WHERE spent = false", &[])?;
+    let mut mint_requests: Vec<MintRequest> = Vec::new();
+    for row in rows {
+        let mint_request: MintRequest = MintRequest {
+            box_id: row.get(0),
+            transaction_id: row.get(1)
+        };
+        mint_requests.push(mint_request);
+    }
+    Ok(mint_requests)
+}
+
+pub fn update_mint_request_to_spend(box_id: &str) {
+    let mut client: Client = connect_to_database().unwrap();
+    let _ = client.execute("UPDATE mint_requests SET spent = true WHERE box_id = $1", &[&box_id]);
 }

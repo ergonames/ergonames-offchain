@@ -1,8 +1,6 @@
 use anyhow::Result;
 
-pub mod utils;
-
-use utils::{database::{get_mint_requests, update_mint_request_to_spend}, types::MintRequest};
+use ergonames_utils::{database::{get_mint_requests, update_mint_request_to_spend}, types::MintRequest};
 
 const LVIE_MODE: &str = "true";
 

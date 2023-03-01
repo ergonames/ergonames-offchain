@@ -1,1 +1,0 @@
-pub const DATABASE_PATH: &str = "postgresql://ergonames:ergonames@localhost:5432/ergonames";

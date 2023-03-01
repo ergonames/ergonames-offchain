@@ -14,4 +14,5 @@ db/
 
 config.json
 
+modules/ergonames-utils/src/main.rs
 ergonames-transaction-utils.jar
