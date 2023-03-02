@@ -21,7 +21,7 @@ pub fn write_to_confirmed_registry_insertions(registration_information: &Registr
         mint_transaction_id,
         spend_transaction_id,
         ergoname_token_id
-    ) VALUES ($1, $2, $3, $4); ";
+    ) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING; ";
     client.execute(query, &[
         &registration_information.ergoname_registered,
         &registration_information.mint_transaction_id,
