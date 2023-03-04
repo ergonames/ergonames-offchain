@@ -19,12 +19,14 @@ pub fn write_to_confirmed_registry_insertions(registration_information: &Registr
     let query = "INSERT INTO confirmed_registry_insertions (
         ergoname_registered,
         mint_transaction_id,
+        mint_box_id,
         spend_transaction_id,
         ergoname_token_id
-    ) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING; ";
+    ) VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING; ";
     client.execute(query, &[
         &registration_information.ergoname_registered,
         &registration_information.mint_transaction_id,
+        &registration_information.mint_box_id,
         &registration_information.spend_transaction_id,
         &registration_information.ergoname_token_id,
     ]).unwrap();
@@ -60,6 +62,7 @@ fn create_registration_information_schema() {
     let query: &str = "CREATE TABLE IF NOT EXISTS confirmed_registry_insertions (
         ergoname_registered VARCHAR(64) NOT NULL PRIMARY KEY,
         mint_transaction_id VARCHAR(64) NOT NULL,
+        mint_box_id VARCHAR(64) NOT NULL,
         spend_transaction_id VARCHAR(64),
         ergoname_token_id VARCHAR(64) NOT NULL
     );";
@@ -101,15 +104,17 @@ pub fn get_last_confirmed_registry_insertion() -> RegistrationInformation {
     let row: &Row = row.unwrap();
     let ergoname_registered: String = row.get(0);
     let mint_transaction_id: String = row.get(1);
+    let mint_box_id: String = row.get(2);
     let mut spend_transaction_id: Option<String> = None;
-    let spend_transaction_id_raw: Result<Option<String>, Error> = row.try_get(2);
+    let spend_transaction_id_raw: Result<Option<String>, Error> = row.try_get(3);
     if spend_transaction_id_raw.is_ok() {
         spend_transaction_id = spend_transaction_id_raw.unwrap();
     }
-    let ergoname_token_id: String = row.get(3);
+    let ergoname_token_id: String = row.get(4);
     let registration_information: RegistrationInformation = RegistrationInformation {
         ergoname_registered,
         mint_transaction_id,
+        mint_box_id,
         spend_transaction_id,
         ergoname_token_id,
     };
