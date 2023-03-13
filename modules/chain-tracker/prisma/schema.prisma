@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://ergonames:ergonames@ergonames-db:5432/ergonames"
+}
+
+model confirmed_registry_insertions {
+  ergoname_registered  String  @id @db.VarChar(64)
+  mint_transaction_id  String  @db.VarChar(64)
+  mint_box_id          String  @db.VarChar(64)
+  spend_transaction_id String? @db.VarChar(64)
+  ergoname_token_id    String  @db.VarChar(64)
+}
+
+model mint_requests {
+  box_id         String  @id @db.VarChar(64)
+  transaction_id String  @db.VarChar(64)
+  spent          Boolean @default(false)
+}
