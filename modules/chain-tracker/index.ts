@@ -151,12 +151,6 @@ const main = async () => {
         await continuousSync();
         await trackMintRequests();
     }
-
-    // let mintRequest: Array<MintRequest> = await getMintRequestAtProxyAddress();
-    // console.log(mintRequest);
-
-    // const allErgonames = await prisma.confirmed_registry_insertions.findMany();
-    // console.log(allErgonames);
 }
 
 main()

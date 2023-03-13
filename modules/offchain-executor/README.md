@@ -1,1 +1,1 @@
-# ErgoNames Offchain System | Chain Tracker
+# ErgoNames Offchain System | Offchain Executor
