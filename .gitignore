@@ -14,7 +14,9 @@ node_modules/
 db/
 
 config.json
+.env
 
+modules/chain-tracker/index.js
 modules/ergonames-utils/src/main.rs
-modules/chain-tracker-ts/index.js
+
 ergonames-transaction-utils.jar
