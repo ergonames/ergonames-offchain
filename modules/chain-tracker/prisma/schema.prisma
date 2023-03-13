@@ -13,6 +13,7 @@ model confirmed_registry_insertions {
   mint_box_id          String  @db.VarChar(64)
   spend_transaction_id String? @db.VarChar(64)
   ergoname_token_id    String  @db.VarChar(64)
+  registration_number  Int     @default(1)
 }
 
 model mint_requests {

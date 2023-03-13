@@ -18,6 +18,7 @@ interface RegistrationInformation {
     mintBoxId: string;
     mintTransactionId: string;
     spendTransactionId: string;
+    registrationNumber: number;
 }
 
 interface MintRequest {
@@ -56,7 +57,8 @@ const getMintInformation = async (lastSpentTransactionId: string): Promise<Regis
         mintTransactionId: mintTransactionId,
         mintBoxId: mintBoxId,
         spendTransactionId: spendTransactionId,
-        ergonameTokenId: ergonameTokenId
+        ergonameTokenId: ergonameTokenId,
+        registrationNumber: 0
     };
     return registrationInformation;
 }
@@ -78,6 +80,22 @@ const getMintRequestAtProxyAddress = async (proxyAddressErgoTree: string = PROXY
     return transactions;
 }
 
+const createSchema = async () => {
+    await prisma.$queryRaw`CREATE TABLE IF NOT EXISTS confirmed_registry_insertions (
+        ergoname_registered VARCHAR(64) NOT NULL PRIMARY KEY,
+        mint_transaction_id VARCHAR(64) NOT NULL,
+        mint_box_id VARCHAR(64) NOT NULL,
+        spend_transaction_id VARCHAR(64),
+        ergoname_token_id VARCHAR(64) NOT NULL,
+        registration_number INTEGER NOT NULL DEFAULT 1
+    )`;
+    await prisma.$queryRaw`CREATE TABLE IF NOT EXISTS mint_requests (
+        box_id VARCHAR(64) NOT NULL PRIMARY KEY,
+        transaction_id VARCHAR(64) NOT NULL,
+        spent BOOLEAN NOT NULL DEFAULT FALSE
+    )`;
+}
+
 const writeToConfirmedRegistryInsertions = async (ergoname: RegistrationInformation) => {
     await prisma.confirmed_registry_insertions.create({
         data: {
@@ -85,7 +103,8 @@ const writeToConfirmedRegistryInsertions = async (ergoname: RegistrationInformat
             ergoname_token_id: ergoname.ergonameTokenId,
             mint_box_id: ergoname.mintBoxId,
             mint_transaction_id: ergoname.mintTransactionId,
-            spend_transaction_id: ergoname.spendTransactionId
+            spend_transaction_id: ergoname.spendTransactionId,
+            registration_number: ergoname.registrationNumber
         }
     });
 }
@@ -106,25 +125,33 @@ const writeToMintRequests = async (mintRequest: MintRequest) => {
 }
 
 const syncInitialRegistry = async () => {
+    let lastRegistrationNumber: number = 0;
     let initialTransactionInformation: InitialTransactionInformation = await getInitialTransactionInformation();
     let registrationInformation: RegistrationInformation = await getMintInformation(initialTransactionInformation.spentTransactionId);
+    registrationInformation.registrationNumber = lastRegistrationNumber + 1;
     await writeToConfirmedRegistryInsertions(registrationInformation);
+    lastRegistrationNumber = registrationInformation.registrationNumber;
     let lastSpentTransactionId: string = registrationInformation.spendTransactionId;
     while (lastSpentTransactionId != null) {
         let registrationInformation: RegistrationInformation = await getMintInformation(lastSpentTransactionId);
+        registrationInformation.registrationNumber = lastRegistrationNumber + 1;
         await writeToConfirmedRegistryInsertions(registrationInformation);
         lastSpentTransactionId = registrationInformation.spendTransactionId;
+        lastRegistrationNumber = registrationInformation.registrationNumber;
     }
 }
 
 const continuousSync = async () => {
     let lastRegistryInsertion: RegistrationInformation = await prisma.$queryRaw`SELECT * FROM confirmed_registry_insertions WHERE spend_transaction_id IS NULL`;
+    let lastRegistrationNumber: number = lastRegistryInsertion.registrationNumber;
     let lastSpentTransactionId: string = lastRegistryInsertion.spendTransactionId;
     if (lastSpentTransactionId != null) {
         let registrationInformation: RegistrationInformation = await getMintInformation(lastSpentTransactionId);
+        registrationInformation.registrationNumber = lastRegistrationNumber + 1;
         while (registrationInformation.spendTransactionId != null) {
             await writeToConfirmedRegistryInsertions(registrationInformation);
             registrationInformation = await getMintInformation(registrationInformation.spendTransactionId);
+            registrationInformation.registrationNumber = lastRegistrationNumber + 1;
         }
     }
 }
@@ -142,6 +169,8 @@ const checkIfRegistryTableIsEmpty = async () => {
 }
 
 const main = async () => {
+    await createSchema();
+
     let registryTableIsEmpty: boolean = await checkIfRegistryTableIsEmpty();
     if (!registryTableIsEmpty) {
         await syncInitialRegistry();
