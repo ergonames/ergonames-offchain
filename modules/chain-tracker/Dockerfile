@@ -1,7 +1,13 @@
-FROM rust:1.67.0
+FROM node:16-alpine
 
-WORKDIR /src/
-COPY ./ ./
+RUN mkdir -p /app
 
-RUN cargo build --release
-CMD ["./target/release/ergonames-chain-tracker"]
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+RUN npx prisma generate
+
+
+CMD ["npm", "run", "start"]

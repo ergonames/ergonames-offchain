@@ -1,9 +1,15 @@
 version: '3.8'
 
+networks:
+  ergonames-network:
+    driver: bridge
+
 services:
   db:
     container_name: ergonames-db
     image: postgres:latest
+    networks:
+      - ergonames-network
     restart: always
     environment:
       POSTGRES_PASSWORD: ergonames
@@ -28,6 +34,8 @@ services:
 
   chain-tracker:
     container_name: ergonames-chain-tracker
+    networks:
+      - ergonames-network
     build:
       context: ./modules/chain-tracker
       dockerfile: Dockerfile

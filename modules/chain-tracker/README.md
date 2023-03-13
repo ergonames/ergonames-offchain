@@ -1,1 +1,0 @@
-# ErgoNames Offchain System | Chain Tracker
